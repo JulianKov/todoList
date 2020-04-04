@@ -1,17 +1,23 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom';
-import Home from './components/Home/Home';
+import styled from 'styled-components';
 import Cards from './components/Cards/Cards';
-import Header from './components/Header/Header';
 
-export default function AutoGridNoWrap() {
-    return (
-    <div>
-      <Header />
-      <Switch>
-        <Route path='/cards' component={Cards} />
-        <Route path='/' component={Home} />
-      </Switch>
-    </div>
+const AppWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 0 20px;
+  max-width: 1200px;
+  background-color: #5FD2B5;
+`
+
+function App() {
+  return (
+    <AppWrapper>
+      <h1>app</h1>
+      <Cards></Cards>
+    </AppWrapper>
   );
 }
+
+export default App;
