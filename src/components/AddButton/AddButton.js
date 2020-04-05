@@ -1,36 +1,65 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-
-const Block = styled.div`
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing:border-box;
-  width: 30%;
-  height: ${props => props.collapsed ? '100px' : '200px'};
-  margin-bottom: 20px;
-  padding: 10px;
-  background: linear-gradient(45deg, #FFAA00 0%, #E6399B 70%);
-  border-radius: 5px;
-  box-shadow: 4px 4px 6px 0px rgba(168,168,168,1);
-  color: #FFFFFF;
-  transition: top .1s;
-  z-index: 3;
-  &:hover {
-    top: 2px;
-  }
-`
+import React, {useRef, useState} from 'react';
+import { connect } from "react-redux";
+import { Block, Row, ButtonTitle, CloseBtn, Input, Form, ControlBtn } from './styled';
 
 
-const AddButton = () => {
+const AddButton = (props) => {
   const [collapsed, rollUp] = useState(true);
+  const [newCardName, setCardName] = useState('');
+  const formRef = useRef(null);
+  const inputRef = useRef('');
+
+  const rollOut = () => {
+    if(!collapsed) {
+      formRef.current.classList.remove('active');
+      rollUp(!collapsed)
+    }
+  };
+
+  const rollIn = () => {
+    if(collapsed) {
+      formRef.current.classList.add('active');
+      rollUp(!collapsed)
+    }
+  };
+
+  const setName = () => {
+    setCardName(inputRef.current.value);
+  };
+
+  const addCard = () => {
+    if (newCardName.length !== 0) {
+      props.onAdd(newCardName);
+      setCardName('');
+      rollOut();
+    }
+  };
 
   return(
-    <Block collapsed={collapsed} onClick={() => {rollUp(!collapsed)}}>
-      <h2>Add new Card...</h2>
+    <Block collapsed={collapsed} onClick={rollIn}>
+      <Row margin20>
+        <ButtonTitle>{collapsed ? 'Create a new Board...' : 'Creating a Board'}</ButtonTitle>
+        {collapsed ? null : (<CloseBtn onClick={rollOut}/>)}
+      </Row>
+      <Form ref={formRef} >
+        <label htmlFor="inp">What shell we call the board?</label>
+        <Input ref={inputRef} value={newCardName} type="text" id="inp" onChange={setName}/>
+        <Row>
+          <ControlBtn danger onClick={rollOut}>Cancel</ControlBtn>
+          <ControlBtn
+            empty={newCardName.length === 0}
+            onClick={addCard}
+          >Create</ControlBtn>
+        </Row>
+      </Form>
     </Block>
   )
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onAdd: (name) => dispatch({type: 'ADD_CARD', payload: name})
+  }
 }
 
-export default AddButton;
+export default connect(null, mapDispatchToProps)(AddButton);

@@ -18,14 +18,14 @@ const Block = styled.div`
   &:hover {
     top: 2px;
   }
-`
+`;
 
-const Card = () => {
+const Card = (props) => {
   return(
     <Block>
-      <h2>Card</h2>
+      <h2>{props.name}</h2>
     </Block>
   )
-}
+};
 
 export default Card;
